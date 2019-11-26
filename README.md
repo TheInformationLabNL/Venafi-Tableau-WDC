@@ -8,8 +8,14 @@ $ yarn
 
 ## Build
 
-You'll need to have webpack installed. And then you can run:
+### For development
 
 ```bash
-$ npx webpack
+$ node_modules/.bin/webpack --mode=development --watch
+```
+
+### For production
+
+```bash
+$ node_modules/.bin/webpack --mode=production
 ```
