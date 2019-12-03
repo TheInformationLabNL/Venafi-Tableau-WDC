@@ -6,22 +6,21 @@ head
   script(src='https://connectors.tableau.com/libs/tableauwdc-2.3.latest.js')
 
 body: #app
-  div
-    h2 Welcome to the Venafi Web Data Connector for Tableau
+  h2 Welcome to the Venafi Web Data Connector for Tableau
 
-    img#arrow(src=require('./img/arrow.png'))
+  img#arrow(src=require('./img/arrow.png'))
 
-    p
-      | In just a few clicks, you'll be able to get your Reeleezee data.
-      | Fill in your username and password below.
-      | Once complete, select how you want to combine your tables and you can start vizzing!
+  p
+    | In just a few clicks, you'll be able to get your Reeleezee data.
+    | Fill in your username and password below.
+    | Once complete, select how you want to combine your tables and you can start vizzing!
 
-    form#form
-      input#base-url(placeholder='Base URL' name='base_url' type='text')
-      input#username(placeholder='Username' name='username' type='text')
-      input#password(placeholder='Password' name='password' type='password')
-      button(type='submit') Submit
+  form#form
+    input#base-url(placeholder='Base URL' name='base_url' type='text')
+    input#username(placeholder='Username' name='username' type='text')
+    input#password(placeholder='Password' name='password' type='password')
+    button(type='submit') Submit
 
-    img#logo(src=require('./img/logo.png'))
+  img#logo(src=require('./img/logo.png'))
 
-    // The compiled javascript will be auto injected here.`
+  // The compiled javascript will be auto injected here.`
