@@ -6,7 +6,7 @@ import createAuthRefreshInterceptor from 'axios-auth-refresh'
 // after accessing it the first time.
 let savedCredentials
 
-createAuthRefreshInterceptor(axios, refreshAndSaveCredentials)
+createAuthRefreshInterceptor(axios, () => refreshAndSaveCredentials())
 
 axios.interceptors.request.use(request => {
   request.headers['X-Venafi-Api-Key'] = getApiKey()
