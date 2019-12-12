@@ -1,35 +1,11 @@
 import axios from "axios"
 import { tables, schemas } from "./schemas"
-import transformData from "./transformData"
+import { transformData, getAllPages } from "./data"
 import { refreshAndSaveCredentialsIfNeeded } from "./auth"
 
 let connector = tableau.makeConnector()
 
 connector.getSchema = cb => cb(schemas)
-
-async function getAllPages(uri, resource, postBody) {
-  let results = []
-
-  while (uri) {
-    let data
-
-    if (postBody) {
-      ({data} = await axios.post(uri, postBody))
-    } else {
-      ({data} = await axios.get(uri))
-    }
-
-    results = results.concat(data[resource])
-
-    if (data._links && data._links.length && data._links[0].Next) {
-      uri = data._links[0].Next.replace(/^\/vedsdk/, '')
-    } else {
-      uri = false
-    }
-  }
-
-  return results
-}
 
 connector.getData = async (tableauTable, doneCallback) => {
   let table = tables[tableauTable.tableInfo.id]

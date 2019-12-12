@@ -1,5 +1,5 @@
-import axios from 'axios'
-import createAuthRefreshInterceptor from 'axios-auth-refresh'
+import axios from "axios"
+import createAuthRefreshInterceptor from "axios-auth-refresh"
 
 // We need to save the credentials in this variable,
 // because the contents of tableau.password will be empty
@@ -9,7 +9,7 @@ let savedCredentials
 createAuthRefreshInterceptor(axios, () => refreshAndSaveCredentials())
 
 axios.interceptors.request.use(request => {
-  request.headers['X-Venafi-Api-Key'] = getApiKey()
+  request.headers["X-Venafi-Api-Key"] = getApiKey()
 
   return request
 })
@@ -30,7 +30,7 @@ export function getCredentials() {
 export async function refreshCredentials(credentials = getCredentials()) {
   try {
     // We ask for a new APIKey using the saved username and password
-    const { data } = await axios.post('/authorize', credentials)
+    const { data } = await axios.post("/authorize", credentials)
     // And then we save the new APIKey together with the username and password
     return { ...credentials, ...data }
   } catch(error) {

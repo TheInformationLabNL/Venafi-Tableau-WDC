@@ -47,7 +47,7 @@ export { tables }
 
 // We need to format our table definitions a bit differently for Tableau
 export let schemas = Object.entries(tables).map(([id, value]) => {
-  let alias = id.replace(/([a-z])([A-Z])/g, '$1 $2')
+  let alias = id.replace(/([a-z])([A-Z])/g, "$1 $2")
   let schema = { id, alias, ...value }
   delete schema.url
   delete schema.postBody
