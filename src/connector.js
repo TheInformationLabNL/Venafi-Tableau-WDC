@@ -7,23 +7,36 @@ let connector = tableau.makeConnector()
 
 connector.getSchema = cb => cb(schemas)
 
+async function getAllPages(uri, resource, postBody) {
+  let results = []
+
+  while (uri) {
+    let data
+
+    if (postBody) {
+      ({data} = await axios.post(uri, postBody))
+    } else {
+      ({data} = await axios.get(uri))
+    }
+
+    results = results.concat(data[resource])
+
+    if (data._links && data._links.length && data._links[0].Next) {
+      uri = data._links[0].Next.replace(/^\/vedsdk/, '')
+    } else {
+      uri = false
+    }
+  }
+
+  return results
+}
+
 connector.getData = async (tableauTable, doneCallback) => {
   let table = tables[tableauTable.tableInfo.id]
-  let data
 
-  // If the table definition has a postBody property
-  if (table.hasOwnProperty('postBody')) {
-    // Then we want to make a POST request
-    ({ data } = await axios.post(table.url, table.postBody))
-  }
+  let data = await getAllPages(table.url, table.resource, table.postBody)
 
-  // Otherwise
-  else {
-    // We want to make a GET request
-    ({ data } = await axios.get(table.url))
-  }
-
-  tableauTable.appendRows(transformData(data[table.resource]))
+  tableauTable.appendRows(transformData(data))
 
   doneCallback()
 }
