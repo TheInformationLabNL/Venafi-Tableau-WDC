@@ -1,3 +1,4 @@
+import "./object.entries.polyfill"
 import "./connector"
 import "./style.styl"
 import axios from "axios"
