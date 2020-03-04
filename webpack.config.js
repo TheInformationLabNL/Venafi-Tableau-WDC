@@ -40,5 +40,10 @@ module.exports = {
                 use: ["babel-loader"]
             }
         ]
+    },
+    devServer: {
+        contentBase: "./dist",
+        compress: false,
+        port: 8080
     }
 };

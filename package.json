@@ -6,7 +6,8 @@
     "scripts": {
         "build": "webpack --mode=production",
         "watch": "webpack --mode=developent --watch",
-        "dev": "webpack --mode=development"
+        "dev": "webpack --mode=development",
+        "serve": "webpack-dev-server --open"
     },
     "devDependencies": {
         "@babel/core": "^7.5.5",
@@ -28,7 +29,8 @@
         "stylus-loader": "^3.0.2",
         "url-loader": "^2.1.0",
         "webpack": "^4.39.1",
-        "webpack-cli": "^3.3.6"
+        "webpack-cli": "^3.3.6",
+        "webpack-dev-server": "^3.10.3"
     },
     "dependencies": {
         "@babel/runtime": "^7.5.5"
