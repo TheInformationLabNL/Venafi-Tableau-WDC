@@ -1,8 +1,9 @@
-import "./object.entries.polyfill";
+import "core-js";
+import "regenerator-runtime/runtime";
+// import "./object.entries.polyfill";
 import "./connector";
 import "./style.styl";
 import axios from "axios";
-import "core-js/features/promise";
 import { refreshAndSaveCredentials } from "./auth";
 
 let corsProxy = "https://www.webdataconnector.net:8889";
