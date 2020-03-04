@@ -1,32 +1,32 @@
-import axios from "axios"
-import { tables, schemas } from "./schemas"
-import { transformData, getAllPages } from "./data"
-import { refreshAndSaveCredentialsIfNeeded } from "./auth"
+import axios from "axios";
+import { tables, schemas } from "./schemas";
+import { transformData, getAllPages } from "./data";
+import { refreshAndSaveCredentialsIfNeeded } from "./auth";
 
-let connector = tableau.makeConnector()
+let connector = tableau.makeConnector();
 
-connector.getSchema = cb => cb(schemas)
+connector.getSchema = cb => cb(schemas);
 
 connector.getData = async (tableauTable, doneCallback) => {
-  let table = tables[tableauTable.tableInfo.id]
+    let table = tables[tableauTable.tableInfo.id];
 
-  let data = await getAllPages(table.url, table.resource, table.postBody)
+    let data = await getAllPages(table.url, table.resource, table.postBody);
 
-  tableauTable.appendRows(transformData(data))
+    tableauTable.appendRows(transformData(data));
 
-  doneCallback()
-}
+    doneCallback();
+};
 
-connector.init = async (cb) => {
-  tableau.authType = tableau.authTypeEnum.custom
+connector.init = async cb => {
+    tableau.authType = tableau.authTypeEnum.custom;
 
-  axios.defaults.baseURL = tableau.connectionData || axios.defaults.baseURL
+    axios.defaults.baseURL = tableau.connectionData || axios.defaults.baseURL;
 
-  if (tableau.phase === tableau.phaseEnum.gatherDataPhase) {
-    await refreshAndSaveCredentialsIfNeeded()
-  }
+    if (tableau.phase === tableau.phaseEnum.gatherDataPhase) {
+        await refreshAndSaveCredentialsIfNeeded();
+    }
 
-  cb()
-}
+    cb();
+};
 
-tableau.registerConnector(connector)
+tableau.registerConnector(connector);
