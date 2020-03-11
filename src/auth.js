@@ -30,11 +30,17 @@ export function getCredentials() {
 export async function refreshCredentials(credentials = getCredentials()) {
     try {
         // We ask for a new APIKey using the saved username and password
-        const { data } = await axios.post("/authorize", credentials);
+        tableau.log("trying credentials: " + JSON.stringify(credentials));
+        const { data } = await axios.post("/authorize/", credentials);
         // And then we save the new APIKey together with the username and password
         return { ...credentials, ...data };
     } catch (error) {
-        console.log({ error });
+        if (error.response) {
+            tableau.log("error response: " + JSON.stringify(error.response));
+            console.log("error response", error.response);
+        }
+        tableau.log("Unable to get new API key: " + JSON.stringify(error));
+        console.error({ error });
         tableau.abortForAuth("Unable to get new API key");
     }
 }
