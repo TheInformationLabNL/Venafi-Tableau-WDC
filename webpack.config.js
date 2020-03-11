@@ -44,6 +44,11 @@ module.exports = {
     devServer: {
         contentBase: "./dist",
         compress: false,
-        port: 8080
+        port: 8080,
+        host: '0.0.0.0',
+        public: 'devvm.dev.local:8080',
+        allowedHosts: [
+            '.dev.local'
+        ]
     }
 };
