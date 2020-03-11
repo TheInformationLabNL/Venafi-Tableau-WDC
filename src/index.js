@@ -7,7 +7,7 @@ import axios from "axios";
 import { refreshAndSaveCredentials } from "./auth";
 
 let corsProxy = "https://www.webdataconnector.net:8889";
-axios.defaults.baseURL = `${corsProxy}/https://101419193.dev.lab.venafi.com/vedsdk`;
+axios.defaults.baseURL = `${corsProxy}/101419193.dev.lab.venafi.com:443/VEDSDK`;
 
 document.getElementById("form").addEventListener("submit", async event => {
     event.preventDefault();
