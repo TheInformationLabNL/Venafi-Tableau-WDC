@@ -4,7 +4,7 @@ import createAuthRefreshInterceptor from "axios-auth-refresh";
 // We need to save the credentials in this variable,
 // because the contents of tableau.password will be empty
 // after accessing it the first time.
-global.savedCredentials = global.savedCredentials || null;
+let savedCredentials;
 
 createAuthRefreshInterceptor(axios, () => refreshAndSaveCredentials());
 
@@ -20,7 +20,7 @@ export function getApiKey({ APIKey } = getCredentials()) {
 
 export function saveCredentials(credentials = getCredentials()) {
     tableau.password = JSON.stringify(credentials);
-    global.savedCredentials = credentials;
+    savedCredentials = credentials;
 }
 
 export function getCredentials() {
