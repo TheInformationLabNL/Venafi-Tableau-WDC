@@ -1,63 +1,43 @@
-import axios from "axios";
-import createAuthRefreshInterceptor from "axios-auth-refresh";
+/*global axios,luxon*/
 
-// We need to save the credentials in this variable,
-// because the contents of tableau.password will be empty
-// after accessing it the first time.
-let savedCredentials;
+async function getApiKey(url, username, password) {
+    let response = await axios.post(`${url}/authorize/`, {
+        Username: username,
+        Password: password,
+    });
 
-createAuthRefreshInterceptor(axios, () => refreshAndSaveCredentials());
+    if (response.status === 200) {
+        return response.data.APIKey;
+    }
 
-axios.interceptors.request.use(request => {
-    request.headers["X-Venafi-Api-Key"] = getApiKey();
-
-    return request;
-});
-
-export function getApiKey({ APIKey } = getCredentials()) {
-    return APIKey;
+    throw {
+        response: response,
+        message: "Invalid status code " + response.status,
+    };
 }
 
-export function saveCredentials(credentials = getCredentials()) {
-    tableau.password = JSON.stringify(credentials);
-    savedCredentials = credentials;
-}
-
-export function getCredentials() {
-    return (savedCredentials = savedCredentials || JSON.parse(tableau.password || "{}"));
-}
-
-export async function refreshCredentials(credentials = getCredentials()) {
+async function minutesApiKeyValid(url, apiKey) {
     try {
-        // We ask for a new APIKey using the saved username and password
-        tableau.log("trying credentials: " + JSON.stringify(credentials));
-        const { data } = await axios.post("/authorize/", credentials);
-        // And then we save the new APIKey together with the username and password
-        return { ...credentials, ...data };
-    } catch (error) {
-        if (error.response) {
-            tableau.log("error response: " + JSON.stringify(error.response));
-            console.log("error response", error.response);
+        let response = await axios.get(`${url}/authorize/checkvalid`, {
+            headers: {
+                "X-Venafi-API-Key": apiKey,
+            },
+        });
+
+        if (response.status === 200) {
+            let timestamp = parseInt(response.data.ValidUntil.match(/\/Date\((.*)\)\//)[1]);
+            let validUntil = luxon.DateTime.fromMillis(timestamp);
+
+            let dateDiff = Math.floor(validUntil.diffNow("minutes").minutes);
+
+            return dateDiff;
         }
-        tableau.log("Unable to get new API key: " + JSON.stringify(error));
-        console.error({ error });
-        tableau.abortForAuth("Unable to get new API key");
+
+        return -1;
+    } catch (_err) {
+        console.error(_err);
+        return -1;
     }
 }
 
-export async function refreshAndSaveCredentials(credentials = getCredentials()) {
-    credentials = await refreshCredentials(credentials);
-    saveCredentials(credentials);
-}
-
-export function credentialsNeedRefreshing({ ValidUntil } = getCredentials()) {
-    // If ValidUntil is undefined then we assume
-    // that we should definitely refresh our credentials
-    return !ValidUntil || new Date(ValidUntil.match(/[\d\s-:.+Z]+/)[0]) < new Date();
-}
-
-export async function refreshAndSaveCredentialsIfNeeded(credentials = getCredentials()) {
-    if (credentialsNeedRefreshing(credentials)) {
-        await refreshAndSaveCredentials(credentials);
-    }
-}
+export { getApiKey, minutesApiKeyValid };

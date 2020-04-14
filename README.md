@@ -1,21 +1,29 @@
 ## Install
 
-Make sure you have yarn installed. Then run:
+Make sure you have node-js v8 or later installed. Then run:
 
 ```bash
-$ yarn
+$ npm install
+```
+
+or for automated build environments:
+```bash
+$ npm ci
 ```
 
 ## Build
 
 ### For development
 
+(this will start a devserver)
+
 ```bash
-$ node_modules/.bin/webpack --mode=development --watch
+$ npm run dev
 ```
 
 ### For production
 
 ```bash
-$ node_modules/.bin/webpack --mode=production
+$ npm run clean
+$ npm run build
 ```

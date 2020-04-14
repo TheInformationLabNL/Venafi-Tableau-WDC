@@ -1,22 +1,33 @@
-import "core-js";
-import "regenerator-runtime/runtime";
-// import "./object.entries.polyfill";
+/*global tableau*/
+
 import "./connector";
-import "./style.styl";
-import axios from "axios";
-import { refreshAndSaveCredentials } from "./auth";
+import "./style.scss";
+import { getApiKey } from "./auth.js";
 
-let corsProxy = "https://www.webdataconnector.net:8889";
-axios.defaults.baseURL = `${corsProxy}/101419193.dev.lab.venafi.com:443/VEDSDK`;
+document.getElementById("form").addEventListener("submit", function (e) {
+    e.preventDefault();
 
-document.getElementById("form").addEventListener("submit", async event => {
-    event.preventDefault();
+    console.log("submit clicked");
 
     let base_url = document.getElementById("base-url").value;
-    let Username = document.getElementById("username").value;
-    let Password = document.getElementById("password").value;
+    let username = document.getElementById("username").value;
+    let password = document.getElementById("password").value;
 
-    tableau.connectionData = base_url || axios.defaults.baseURL;
-    await refreshAndSaveCredentials({ Username, Password });
-    tableau.submit();
+    tableau.connectionData = base_url;
+    tableau.connectionName = "Venafi " + tableau.connectionData;
+
+    getApiKey(tableau.connectionData, username, password)
+        .then((response) => {
+            console.log("Received api key", response);
+            tableau.username = username;
+            tableau.password = JSON.stringify({
+                password,
+                apiKey: response,
+            });
+
+            tableau.submit();
+        })
+        .catch((err) => {
+            console.error("Error:", err);
+        });
 });

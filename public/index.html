@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <title>Venafi WDC</title>
+        <link href="index.css" rel="stylesheet" />
+    </head>
+    <body>
+        <div id="app">
+            <h2>Welcome to the Venafi Web Data Connector for Tableau</h2>
+            <img id="arrow" src="img/arrow.png" />
+            <p>
+                In just a few clicks, you'll be able to get your Venafi data. Fill in your Venafi API URL, username and
+                password below. Once complete, select how you want to combine your tables and you can start vizzing!
+            </p>
+            <form id="form">
+                <input
+                    id="base-url"
+                    placeholder="Base URL"
+                    name="base_url"
+                    type="text"
+                    value=""
+                /><input id="username" placeholder="Username" name="username" value="" type="text" /><input
+                    id="password"
+                    placeholder="Password"
+                    name="password"
+                    type="password"
+                    value=""
+                /><button type="submit">
+                    Submit
+                </button>
+            </form>
+            <img id="logo" src="img/logo.png" /><!-- The compiled javascript will be auto injected here.-->
+        </div>
+        <script
+            src="https://unpkg.com/core-js-bundle@3.6.4/minified.js"
+            crossorigin="anonymous"
+            integrity="sha384-0klsXCJV+cWaC+zXWBGWot1n1vMkFkbxy6BtBjwrn+fEoS5kflOTchfH9PUQPaN+"
+        ></script>
+        <script
+            src="https://unpkg.com/axios/dist/axios.min.js"
+            crossorigin="anonymous"
+            integrity="sha384-3zW4Ss6nBzDaj/vvjP2Qwu5xaWAzOgTSccYj0DfBO/5tDzQksJa+tWrYMlYPM00u"
+        ></script>
+        <script src="https://cdn.polyfill.io/v2/polyfill.js?features=Intl.~locale.zh,Intl.~locale.fr"></script>
+        <script
+            src="https://unpkg.com/luxon@1.22.0/build/global/luxon.min.js"
+            crossorigin="anonymous"
+            integrity="sha384-R6f7ys/efB1F9bkP6MHucrEUsPoos5An2rZ7xqZ3Dj99/fr5zWvZ9xaNFVXlOg0y"
+        ></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
+        <script src="https://connectors.tableau.com/libs/tableauwdc-2.3.latest.js"></script>
+        <script type="text/javascript" src="index.js"></script>
+    </body>
+</html>
