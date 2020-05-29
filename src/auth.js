@@ -1,6 +1,7 @@
-/*global axios,luxon*/
+/*global axios,luxon,tableau*/
 
 async function getApiKey(url, username, password) {
+    tableau.log(`getApiKey: Logging in and getting apikey`);
     let response = await axios.post(`${url}/authorize/`, {
         Username: username,
         Password: password,
@@ -18,6 +19,7 @@ async function getApiKey(url, username, password) {
 
 async function minutesApiKeyValid(url, apiKey) {
     try {
+        tableau.log(`minutesApiKeyValid: Seeing if the apiKey is still valid`);
         let response = await axios.get(`${url}/authorize/checkvalid`, {
             headers: {
                 "X-Venafi-API-Key": apiKey,

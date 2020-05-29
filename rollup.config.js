@@ -35,9 +35,6 @@ module.exports = {
             envs: ["browser"],
         }),
         postcss({
-            // This block under here is to use rollup-plugin-scss as a preprocessor for postcss.
-            // Since we don't use scss, no need for it
-
             preprocessor: (content, id) =>
                 new Promise((resolve) => {
                     const result = scss.renderSync({ file: id });

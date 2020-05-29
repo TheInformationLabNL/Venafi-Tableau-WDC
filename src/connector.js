@@ -47,6 +47,14 @@ connector.getSchema = function (schemaCallback) {
     schemaCallback([certificatesTable, devicesTable, applicationsTable, licenseCountTable, logEventsTable]);
 };
 
+function reportError(_err) {
+    if (_err && _err.message) {
+        tableau.abortWithError("Error in WDC: " + _err.message);
+    } else {
+        tableau.abortWithError("Unknown error in WDC");
+    }
+}
+
 connector.getData = function (table, doneCallback) {
     let passwordData;
 
@@ -69,12 +77,14 @@ connector.getData = function (table, doneCallback) {
 
     switch (table.tableInfo.id) {
         case "all_certificates":
+            tableau.log("from getData(), calling fetchAllCertificates()");
             fetchAllCertificates(table, passwordData.apiKey)
                 .then(() => {
+                    tableau.log("from getData(), fetchAllCertificates() returned OK");
                     doneCallback();
                 })
-                .catch(() => {
-                    tableau.abortWithError("");
+                .catch((_err) => {
+                    reportError(_err);
                 });
             break;
         case "all_devices":
@@ -82,8 +92,8 @@ connector.getData = function (table, doneCallback) {
                 .then(() => {
                     doneCallback();
                 })
-                .catch(() => {
-                    tableau.abortWithError("");
+                .catch((_err) => {
+                    reportError(_err);
                 });
             break;
         case "all_applications":
@@ -91,8 +101,8 @@ connector.getData = function (table, doneCallback) {
                 .then(() => {
                     doneCallback();
                 })
-                .catch(() => {
-                    tableau.abortWithError("");
+                .catch((_err) => {
+                    reportError(_err);
                 });
             break;
         case "license_counts":
@@ -100,8 +110,8 @@ connector.getData = function (table, doneCallback) {
                 .then(() => {
                     doneCallback();
                 })
-                .catch(() => {
-                    tableau.abortWithError("");
+                .catch((_err) => {
+                    reportError(_err);
                 });
             break;
         case "log_events":
@@ -109,8 +119,8 @@ connector.getData = function (table, doneCallback) {
                 .then(() => {
                     doneCallback();
                 })
-                .catch(() => {
-                    tableau.abortWithError("");
+                .catch((_err) => {
+                    reportError(_err);
                 });
             break;
         default:
@@ -119,7 +129,49 @@ connector.getData = function (table, doneCallback) {
     }
 };
 
+async function handleTokenLifespan(passwordData) {
+    try {
+        if (passwordData.password && passwordData.apiKey && tableau.connectionData) {
+            // We have enough to check if the apiKey is valid
+
+            console.log("Checking if API key is valid");
+            let dateDiff = await minutesApiKeyValid(tableau.connectionData, passwordData.apiKey);
+
+            console.log(dateDiff);
+            if (dateDiff > 5) {
+                console.log("Enough minutes left, lets use it");
+                // We have more than 5 minutes left. Let's use it!
+                return passwordData;
+            }
+
+            throw "apiKey is expired";
+        }
+    } catch (_err) {
+        // We have no apiKey, it's invalid or it's expired. Clear it
+        passwordData.apiKey = null;
+    }
+
+    if (passwordData.password && tableau.username) {
+        // We can try to get a new apiKey
+        console.log("Trying to get new API key");
+
+        try {
+        let newKey = await getApiKey(tableau.connectionData, tableau.username, passwordData.password);
+
+        console.log("Received a new apikey (but not showing it here)");
+        passwordData.apiKey = newKey;
+
+        return passwordData;
+        } catch (_err) {
+            throw "Error in trying to get apiKey. Reauthenticate";
+        }
+    } else {
+        throw "No current username, password and/or apiKey present. Reauthenticate";
+    }
+}
+
 connector.init = async function (initCallback) {
+    tableau.log("VENAFI init callback");
     console.log("init:", tableau);
 
     if (tableau.phase !== "gatherData") {
@@ -139,51 +191,15 @@ connector.init = async function (initCallback) {
     }
 
     try {
-        if (passwordData.password && passwordData.apiKey && tableau.connectionData) {
-            // We have enough to check if the apiKey is valid
+        let newPasswordData = await handleTokenLifespan(passwordData);
 
-            console.log("Checking if API key is valid");
-            let dateDiff = await minutesApiKeyValid(tableau.connectionData, passwordData.apiKey);
-
-            if (dateDiff > 5) {
-                console.log("Enough minutes left, lets use it");
-                // We have more than 3a minute left. Let's use it!
-                initCallback();
-                return;
-            }
-
-            throw "apiKey is expired";
-        }
+        tableau.password = JSON.stringify(newPasswordData);
+        initCallback();
+        return;
     } catch (_err) {
-        // We have no apiKey, it's invalid or it's expired. Clear it
-        passwordData.apiKey = null;
-        tableau.password = JSON.stringify(passwordData);
-    }
-
-    try {
-        if (passwordData.password && tableau.username) {
-            // We can try to get a new apiKey
-            console.log("Trying to get new API key");
-
-            let newKey = await getApiKey(tableau.connectionData, tableau.username, passwordData.password);
-
-            console.log("Received a new apikey", newKey);
-            passwordData.apiKey = newKey;
-            tableau.password = JSON.stringify(passwordData);
-
-            initCallback();
-            return;
-        } else {
-            tableau.abortForAuth("No current username, password and/or apiKey present. Reauthenticate");
-            return;
-        }
-    } catch (err) {
-        // Error while getting new apiKey
         tableau.abortForAuth("Error while getting new apiKey, reauthenticate");
+        return;
     }
-
-    console.log("Asking Tableau to reauthenticatie");
-    tableau.abortForAuth("No authentication present");
 };
 
 tableau.registerConnector(connector);
