@@ -70,7 +70,7 @@ connector.getData = function (table, doneCallback) {
     console.log("Our api key:", passwordData.apiKey);
 
     if (!table.tableInfo || !table.tableInfo.id) {
-        tableau.log("No table-id supplid by tableau");
+        tableau.log("No table-id supplied by tableau");
         doneCallback();
         return;
     }
