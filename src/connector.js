@@ -44,7 +44,39 @@ connector.getSchema = function (schemaCallback) {
         incrementColumnId: "ServerTimestamp",
     };
 
-    schemaCallback([certificatesTable, devicesTable, applicationsTable, licenseCountTable, logEventsTable]);
+    const tableConnections = [
+        {
+            alias: "Devices and applications",
+            tables: [
+                {
+                    id: "all_devices",
+                    alias: "All devices",
+                },
+                {
+                    id: "all_applications",
+                    alias: "All applications",
+                },
+            ],
+            "joins": [
+                {
+                    "left": {
+                        "tableAlias": "All devices",
+                        "columnId": "DN"
+                    },
+                    "right": {
+                        "tableAlias": "All applications",
+                        "columnId": "Parent"
+                    },
+                    "joinType": "left"
+                }
+            ]
+        },
+    ];
+
+    schemaCallback(
+        [certificatesTable, devicesTable, applicationsTable, licenseCountTable, logEventsTable],
+        tableConnections
+    );
 };
 
 function reportError(_err) {
@@ -156,12 +188,12 @@ async function handleTokenLifespan(passwordData) {
         console.log("Trying to get new API key");
 
         try {
-        let newKey = await getApiKey(tableau.connectionData, tableau.username, passwordData.password);
+            let newKey = await getApiKey(tableau.connectionData, tableau.username, passwordData.password);
 
-        console.log("Received a new apikey (but not showing it here)");
-        passwordData.apiKey = newKey;
+            console.log("Received a new apikey (but not showing it here)");
+            passwordData.apiKey = newKey;
 
-        return passwordData;
+            return passwordData;
         } catch (_err) {
             throw "Error in trying to get apiKey. Reauthenticate";
         }
