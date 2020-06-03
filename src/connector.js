@@ -99,66 +99,73 @@ connector.getData = function (table, doneCallback) {
         return;
     }
 
-    console.log("Our api key:", passwordData.apiKey);
-
     if (!table.tableInfo || !table.tableInfo.id) {
-        tableau.log("No table-id supplid by tableau");
-        doneCallback();
+        tableau.log("No table-id supplied by tableau");
+        tableau.abortWithError("No table-id supplied by Tableau");
         return;
     }
 
-    switch (table.tableInfo.id) {
-        case "all_certificates":
-            tableau.log("from getData(), calling fetchAllCertificates()");
-            fetchAllCertificates(table, passwordData.apiKey)
-                .then(() => {
-                    tableau.log("from getData(), fetchAllCertificates() returned OK");
+    handleTokenLifespan(passwordData)
+        .then(() => {
+            switch (table.tableInfo.id) {
+                case "all_certificates":
+                    tableau.log("from getData(), calling fetchAllCertificates()");
+                    fetchAllCertificates(table, passwordData.apiKey)
+                        .then(() => {
+                            tableau.log("from getData(), fetchAllCertificates() returned OK");
+                            doneCallback();
+                        })
+                        .catch((_err) => {
+                            reportError(_err);
+                        });
+                    break;
+                case "all_devices":
+                    fetchAllDevices(table, passwordData.apiKey)
+                        .then(() => {
+                            doneCallback();
+                        })
+                        .catch((_err) => {
+                            reportError(_err);
+                        });
+                    break;
+                case "all_applications":
+                    fetchAllApplications(table, passwordData.apiKey)
+                        .then(() => {
+                            doneCallback();
+                        })
+                        .catch((_err) => {
+                            reportError(_err);
+                        });
+                    break;
+                case "license_counts":
+                    fetchLicenseCounts(table, passwordData.apiKey)
+                        .then(() => {
+                            doneCallback();
+                        })
+                        .catch((_err) => {
+                            reportError(_err);
+                        });
+                    break;
+                case "log_events":
+                    fetchLogEvents(table, passwordData.apiKey)
+                        .then(() => {
+                            doneCallback();
+                        })
+                        .catch((_err) => {
+                            reportError(_err);
+                        });
+                    break;
+                default:
+                    tableau.log("Unknown table-id: " + table.tableInfo.id);
+                    tableau.abortWithError("Tableau requested an unknown table-id: " + table.tablInfo.id);
                     doneCallback();
-                })
-                .catch((_err) => {
-                    reportError(_err);
-                });
-            break;
-        case "all_devices":
-            fetchAllDevices(table, passwordData.apiKey)
-                .then(() => {
-                    doneCallback();
-                })
-                .catch((_err) => {
-                    reportError(_err);
-                });
-            break;
-        case "all_applications":
-            fetchAllApplications(table, passwordData.apiKey)
-                .then(() => {
-                    doneCallback();
-                })
-                .catch((_err) => {
-                    reportError(_err);
-                });
-            break;
-        case "license_counts":
-            fetchLicenseCounts(table, passwordData.apiKey)
-                .then(() => {
-                    doneCallback();
-                })
-                .catch((_err) => {
-                    reportError(_err);
-                });
-            break;
-        case "log_events":
-            fetchLogEvents(table, passwordData.apiKey)
-                .then(() => {
-                    doneCallback();
-                })
-                .catch((_err) => {
-                    reportError(_err);
-                });
-            break;
-        default:
-            tableau.log("Unknown table-id: " + table.tableInfo.id);
-            doneCallback();
-    }
+            }
+        })
+        .catch(() => {
+            tableau.abortWithError(
+                "The WDC could not refresh it's token. Please try after starting Tableau again, or delete and re-add the datasource"
+            );
+        });
 };
 
 async function handleTokenLifespan(passwordData) {
