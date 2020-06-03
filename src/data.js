@@ -557,7 +557,7 @@ async function fetchLogEvents(table, apiKey) {
     try {
         tableau.reportProgress("Fetching log-events");
 
-        let logUrl = new URL("log", urlObj);
+        let logUrl = new URL("log?limit=100000", urlObj);
         if (table.incrementValue) {
             let lastLog = luxon.DateTime.fromFormat(table.incrementValue, "yyyy-LL-dd HH:mm:ss");
             let lastLogDate = lastLog.toFormat("yyyy-LL-dd");
