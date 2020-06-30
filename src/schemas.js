@@ -170,6 +170,17 @@ let tables = {
                 transform: transformIsoDateTime,
             },
             {
+                id: "CertificateDetails_RevocationStatus",
+                source: "CertificateDetails.RevocationStatus",
+                dataType: tableau.dataTypeEnum.string,
+            },
+            {
+                id: "CertificateDetails_RevocationDate",
+                source: "CertificateDetails.RevocationDate",
+                dataType: tableau.dataTypeEnum.datetime,
+                transform: transformIsoDateTime,
+            },
+            {
                 id: "CertificateDetails_Subject",
                 source: "CertificateDetails.Subject",
                 dataType: tableau.dataTypeEnum.string,
@@ -553,7 +564,7 @@ let tables = {
                 id: "ClientTimestamp",
                 source: "ClientTimestamp",
                 dataType: tableau.dataTypeEnum.datetime,
-                transform: transformIsoDateTime
+                transform: transformIsoDateTime,
             },
             {
                 id: "Component",
@@ -594,7 +605,7 @@ let tables = {
                 id: "ServerTimestamp",
                 source: "ServerTimestamp",
                 dataType: tableau.dataTypeEnum.datetime,
-                transform: transformIsoDateTime
+                transform: transformIsoDateTime,
             },
             {
                 id: "Severity",
