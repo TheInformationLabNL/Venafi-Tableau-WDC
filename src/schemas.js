@@ -242,6 +242,11 @@ let tables = {
                 dataType: tableau.dataTypeEnum.string,
             },
             {
+                id: "Origin",
+                source: "Origin",
+                dataType: tableau.dataTypeEnum.string,
+            },
+            {
                 id: "Disabled",
                 source: "disabled",
                 dataType: tableau.dataTypeEnum.bool,
