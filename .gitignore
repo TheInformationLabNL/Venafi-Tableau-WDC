@@ -1,3 +1,4 @@
 dist
 node_modules
 venafi-wdc-*.zip
+.DS_Store
