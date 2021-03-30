@@ -251,6 +251,12 @@ let tables = {
                 source: "disabled",
                 dataType: tableau.dataTypeEnum.bool,
             },
+            {
+                id: "CustomFields",
+                source: "CustomFields",
+                dataType: tableau.dataTypeEnum.string,
+                transform: transformArrayToString,
+            },
         ],
     },
     AllDevices: {
