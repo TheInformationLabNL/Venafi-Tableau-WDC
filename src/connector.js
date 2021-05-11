@@ -157,7 +157,7 @@ connector.getData = function (table, doneCallback) {
                     break;
                 default:
                     tableau.log("Unknown table-id: " + table.tableInfo.id);
-                    tableau.abortWithError("Tableau requested an unknown table-id: " + table.tablInfo.id);
+                    tableau.abortWithError("Tableau requested an unknown table-id: " + table.tableInfo.id);
                     doneCallback();
             }
         })
