@@ -92,7 +92,6 @@ connector.getData = function (table, doneCallback) {
 
     try {
         passwordData = JSON.parse(tableau.password);
-        console.log("Password data:", passwordData);
     } catch (_err) {
         console.error("tableau.password had invalid contents", _err);
         tableau.abortForAuth("tableau.password had invalid contents");
@@ -222,7 +221,6 @@ connector.init = async function (initCallback) {
     let passwordData;
     try {
         passwordData = JSON.parse(tableau.password);
-        console.log("Password data:", passwordData);
     } catch (_err) {
         console.error("tableau.password had invalid contents", _err);
         tableau.abortForAuth("tableau.password had invalid contents");
