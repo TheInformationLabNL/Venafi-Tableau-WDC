@@ -1,4 +1,5 @@
-html, body {
+html,
+body {
     position: fixed;
     top: 0;
     left: 0;
@@ -42,7 +43,6 @@ img {
 
 button {
     color: #fff;
-    margin: 2em 0;
     background-color: #5cb85c;
     display: inline-block;
     padding: 6px 12px;
@@ -72,6 +72,11 @@ button {
     }
 }
 
+.my {
+    margin-top: 2em;
+    margin-bottom: 2em;
+}
+
 form {
     text-align: center;
 }
@@ -89,4 +94,17 @@ input {
     border-radius: 0.25rem;
     transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
     margin: 0.5rem auto;
+}
+
+.is-hidden {
+    display: none;
+}
+
+.is-inactive {
+    background-color: #abbdab;
+}
+
+.error {
+    color: #f00;
+    font-weight: bolder;
 }

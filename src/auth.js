@@ -17,6 +17,25 @@ async function getApiKey(url, username, password) {
     };
 }
 
+async function getBearerToken(vedSdkUrl, clientId, refreshToken) {
+    tableau.log(`getApiKey: Using refresh_token to get real token`);
+    const url = vedSdkUrl.replace(/\/vedsdk$/i, "");
+
+    let response = await axios.post(`${url}/vedauth/authorize/token`, {
+        refresh_token: refreshToken,
+        client_id: clientId,
+    });
+
+    if (response.status === 200) {
+        return response.data.access_token || null;
+    }
+
+    throw {
+        response: response,
+        message: "Invalid status code " + response.status,
+    };
+}
+
 async function minutesApiKeyValid(url, apiKey) {
     try {
         tableau.log(`minutesApiKeyValid: Seeing if the apiKey is still valid`);
@@ -42,4 +61,4 @@ async function minutesApiKeyValid(url, apiKey) {
     }
 }
 
-export { getApiKey, minutesApiKeyValid };
+export { getApiKey, getBearerToken, minutesApiKeyValid };
