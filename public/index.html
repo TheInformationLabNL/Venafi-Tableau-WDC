@@ -1,50 +1,60 @@
 <!DOCTYPE html>
 <html lang="en">
+
     <head>
         <meta charset="UTF-8" />
         <title>Venafi WDC</title>
         <link href="index.css" rel="stylesheet" />
     </head>
+
     <body>
         <div id="app">
             <h2>Welcome to the Venafi Web Data Connector for Tableau</h2>
+            <p>In just a few clicks, you'll be able to get your Venafi data.</p>
             <img id="arrow" src="img/arrow.png" />
-            <p>
-                In just a few clicks, you'll be able to get your Venafi data. <br>
-                Add your username and password below and select Submit.
+            <div>
+                <button type="button" id="userPassButton">Use username and password</button>
+                <button type="button" id="tokenButton" class="is-inactive">Use refresh token</button>
+            </div>
+            <p class="error is-hidden">
             </p>
-            <form id="form">
-                <input id="username" placeholder="Username" name="username" value="" type="text" /><input
-                    id="password"
-                    placeholder="Password"
-                    name="password"
-                    type="password"
-                    value=""
-                /><button type="submit">
-                    Submit
-                </button>
-            </form>
-            <a href="https://www.theinformationlab.nl/venafi" target="_blank"><img id="logo" src="img/logo.png" alt="The Information Lab" /></a>
+            <div id="userPassAuth">
+                <p>
+                    Add your username and password below and select Submit.
+                </p>
+                <form id="userPassForm">
+                    <input id="username" placeholder="Username" name="username" value="" type="text" />
+                    <input id="password" placeholder="Password" name="password" type="password" value="" />
+                    <button type="submit" class="my submit-button">
+                        Submit
+                    </button>
+                </form>
+            </div>
+            <div id="tokenAuth" class="is-hidden">
+                <p>Add the correct Client ID (App name) and a refresh token below and select Submit.</p>
+                <form id="tokenForm">
+                    <input id="client_id" placeholder="Client ID" name="client_id" value="" type="text" />
+                    <input id="refresh_token" placeholder="Refresh token" name="refresh_token" value="" type="text" />
+                    <button type="submit" class="my submit-button">
+                        Submit
+                    </button>
+                </form>
+            </div>
+            <a href="https://www.theinformationlab.nl/venafi" target="_blank"><img id="logo" src="img/logo.png"
+                    alt="The Information Lab" /></a>
             <!-- The compiled javascript will be auto injected here.-->
         </div>
-        <script
-            src="https://unpkg.com/core-js-bundle@3.6.4/minified.js"
-            crossorigin="anonymous"
-            integrity="sha384-0klsXCJV+cWaC+zXWBGWot1n1vMkFkbxy6BtBjwrn+fEoS5kflOTchfH9PUQPaN+"
-        ></script>
-        <script 
-                src="https://unpkg.com/axios@0.20.0/dist/axios.min.js" 
-                crossorigin="anonymous" 
-                integrity="sha384-2XOZivYbqb8tFabKgnwAzzK83I/YRbbn0VloViPRrAT2AGg4Qo2pmG1XrkkCXNpo">
-        </script>
+        <script src="https://unpkg.com/core-js-bundle@3.6.4/minified.js" crossorigin="anonymous"
+            integrity="sha384-0klsXCJV+cWaC+zXWBGWot1n1vMkFkbxy6BtBjwrn+fEoS5kflOTchfH9PUQPaN+"></script>
+        <script src="https://unpkg.com/axios@0.20.0/dist/axios.min.js" crossorigin="anonymous"
+            integrity="sha384-2XOZivYbqb8tFabKgnwAzzK83I/YRbbn0VloViPRrAT2AGg4Qo2pmG1XrkkCXNpo">
+            </script>
         <script src="https://cdn.polyfill.io/v2/polyfill.js?features=Intl.~locale.zh,Intl.~locale.fr"></script>
-        <script
-            src="https://unpkg.com/luxon@1.22.0/build/global/luxon.min.js"
-            crossorigin="anonymous"
-            integrity="sha384-R6f7ys/efB1F9bkP6MHucrEUsPoos5An2rZ7xqZ3Dj99/fr5zWvZ9xaNFVXlOg0y"
-        ></script>
+        <script src="https://unpkg.com/luxon@1.22.0/build/global/luxon.min.js" crossorigin="anonymous"
+            integrity="sha384-R6f7ys/efB1F9bkP6MHucrEUsPoos5An2rZ7xqZ3Dj99/fr5zWvZ9xaNFVXlOg0y"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js"></script>
         <script src="https://connectors.tableau.com/libs/tableauwdc-2.3.latest.js"></script>
         <script type="text/javascript" src="index.js"></script>
     </body>
+
 </html>
