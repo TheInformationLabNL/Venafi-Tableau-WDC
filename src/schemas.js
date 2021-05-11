@@ -24,6 +24,34 @@ function transformNameValues(input, name) {
     return rt;
 }
 
+function transformCustomFieldsToString(input) {
+    let rt = [];
+
+    // null or undefined, return null
+    if (!input) return null;
+
+    // not an array? return null to prevent errors on .forEach()
+    if (!Array.isArray(input)) {
+        return null;
+    }
+
+    input.forEach((cf) => {
+        let name = cf.Name || null;
+        let value = cf.Value || null;
+
+        if (name && value) {
+            if (typeof value !== "string") {
+                value = transformArrayToString(value);
+            }
+            rt.push(`${name}=${value}`);
+        }
+    });
+
+    if (rt.length === 0) return null;
+
+    return rt.join("\n");
+}
+
 let tables = {
     AllCertificates: {
         columns: [
@@ -250,6 +278,12 @@ let tables = {
                 id: "Disabled",
                 source: "disabled",
                 dataType: tableau.dataTypeEnum.bool,
+            },
+            {
+                id: "CustomFields",
+                source: "CustomFields",
+                dataType: tableau.dataTypeEnum.string,
+                transform: transformCustomFieldsToString,
             },
         ],
     },

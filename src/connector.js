@@ -1,5 +1,5 @@
 /*global tableau*/
-import { getApiKey, minutesApiKeyValid } from "./auth.js";
+import { getApiKey, getBearerToken, minutesApiKeyValid } from "./auth.js";
 
 import { tables } from "./schemas";
 import {
@@ -57,19 +57,19 @@ connector.getSchema = function (schemaCallback) {
                     alias: "All applications",
                 },
             ],
-            "joins": [
+            joins: [
                 {
-                    "left": {
-                        "tableAlias": "All devices",
-                        "columnId": "DN"
+                    left: {
+                        tableAlias: "All devices",
+                        columnId: "DN",
                     },
-                    "right": {
-                        "tableAlias": "All applications",
-                        "columnId": "Parent"
+                    right: {
+                        tableAlias: "All applications",
+                        columnId: "Parent",
                     },
-                    "joinType": "left"
-                }
-            ]
+                    joinType: "left",
+                },
+            ],
         },
     ];
 
@@ -92,7 +92,6 @@ connector.getData = function (table, doneCallback) {
 
     try {
         passwordData = JSON.parse(tableau.password);
-        console.log("Password data:", passwordData);
     } catch (_err) {
         console.error("tableau.password had invalid contents", _err);
         tableau.abortForAuth("tableau.password had invalid contents");
@@ -157,7 +156,7 @@ connector.getData = function (table, doneCallback) {
                     break;
                 default:
                     tableau.log("Unknown table-id: " + table.tableInfo.id);
-                    tableau.abortWithError("Tableau requested an unknown table-id: " + table.tablInfo.id);
+                    tableau.abortWithError("Tableau requested an unknown table-id: " + table.tableInfo.id);
                     doneCallback();
             }
         })
@@ -195,7 +194,11 @@ async function handleTokenLifespan(passwordData) {
         console.log("Trying to get new API key");
 
         try {
-            let newKey = await getApiKey(tableau.connectionData, tableau.username, passwordData.password);
+            let newKey = await getApiKey(
+                tableau.connectionData,
+                tableau.username,
+                passwordData.password
+            );
 
             console.log("Received a new apikey (but not showing it here)");
             passwordData.apiKey = newKey;
@@ -204,8 +207,23 @@ async function handleTokenLifespan(passwordData) {
         } catch (_err) {
             throw "Error in trying to get apiKey. Reauthenticate";
         }
+    } else if (passwordData.refreshToken && passwordData.clientId) {
+        try {
+            let newKey = await getBearerToken(
+                tableau.connectionData,
+                passwordData.clientId,
+                passwordData.refreshToken
+            );
+
+            console.log("Received a new apikey through the refreshtoken");
+            passwordData.apiKey = newKey;
+
+            return passwordData;
+        } catch (_err) {
+            throw "Error in trying to use refreshtoken to get apiKey. Reauthenticate";
+        }
     } else {
-        throw "No current username, password and/or apiKey present. Reauthenticate";
+        throw "No current username, password, clientId, refreshToken and/or apiKey present. Reauthenticate";
     }
 }
 
@@ -222,7 +240,6 @@ connector.init = async function (initCallback) {
     let passwordData;
     try {
         passwordData = JSON.parse(tableau.password);
-        console.log("Password data:", passwordData);
     } catch (_err) {
         console.error("tableau.password had invalid contents", _err);
         tableau.abortForAuth("tableau.password had invalid contents");

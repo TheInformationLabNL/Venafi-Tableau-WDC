@@ -59,13 +59,13 @@ module.exports = {
         copy({
             targets: [
                 { src: "public/index.html", dest: "dist/", rename: "index.html" },
-                { src: "src/img", dest: "dist/" }
+                { src: "src/img", dest: "dist/" },
             ],
         }),
         !production &&
             serve({
                 contentBase: "dist",
-                host: "172.18.96.210",
+                host: "127.0.0.1",
                 port: "8080",
             }),
     ],
