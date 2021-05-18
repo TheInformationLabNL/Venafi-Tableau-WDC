@@ -20,7 +20,7 @@
         "rollup-plugin-nodent": "^0.2.2",
         "rollup-plugin-postcss": "^2.0.6",
         "rollup-plugin-scss": "^2.1.0",
-        "rollup-plugin-serve": "^1.0.1",
+        "rollup-plugin-serve": "^1.0.2",
         "rollup-plugin-watch-assets": "^1.0.1"
     }
 }
